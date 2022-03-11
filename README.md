@@ -9,7 +9,7 @@
 
 Youtube Video demonstrating the features of the Web Application in detail.
 
-[![Slideshow for the Project](https://img.youtube.com/vi/xm-PVOJMb5I/maxresdefault.jpg)](https://www.youtube.com/watch?v=xm-PVOJMb5I)
+[![Demo for the Project](https://img.youtube.com/vi/xm-PVOJMb5I/maxresdefault.jpg)](https://www.youtube.com/watch?v=xm-PVOJMb5I)
 
 # SLIDESHOW FOR THE PROJECT
 
@@ -25,7 +25,7 @@ Download the source folder onto your Desktop or PC.
 
 ### Step 2 - Setup the python environment
 
-Open the folder as a Project in any suitable IDE which supports Python 3.11
+Open the folder as a Project in any suitable IDE which supports [Python 3.10](https://www.python.org/downloads/)
 
 ### Step 3 - Open settings.py and connect to your database
 
