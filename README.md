@@ -5,6 +5,12 @@
 > providing the customers with a online portal using which 
 > they can easily view the pharmacy at a glance without physically visiting it.
 
+# DEMO
+
+Youtube Video demonstrating the features of the Web Application in detail.
+
+[![Slideshow for the Project](https://img.youtube.com/vi/xm-PVOJMb5I/maxresdefault.jpg)](https://www.youtube.com/watch?v=xm-PVOJMb5I)
+
 # SLIDESHOW FOR THE PROJECT
 
 Youtube Video demonstrating the features of the Web Application in a silent slideshow.
