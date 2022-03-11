@@ -9,7 +9,7 @@
 
 Youtube Video demonstrating the features of the Web Application in detail.
 
-
+[![Demo for the Project](https://img.youtube.com/vi/xm-PVOJMb5I/maxresdefault.jpg)](https://www.youtube.com/watch?v=xm-PVOJMb5I)
 
 # SLIDESHOW FOR THE PROJECT
 
