@@ -1,0 +1,206 @@
+{% extends 'home_base.html' %}
+{% load static %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="text-center">
+
+    <img class="mb-4" style="margin:auto; margin-top:100px;" src="{% static 'healthcare_icon.png' %}" alt="" width="102" height="97">
+
+</div>
+<form class="RegistrationForm" method="post" style="width:400px; margin:auto;">
+
+    {% csrf_token %}
+
+    <h1 class="h3 mb-3 fw-bold fs-1 text-center">
+        Welcome Customer
+    </h1>
+
+    <h1 class="h3 mb-3 fw-bold fs-3 text-center">
+        Registration Form
+    </h1>
+
+    <p style="color:#0000ff;">
+        Note: Username cannot be updated after registration
+    </p>
+
+    {% for message in messages %}
+        <p style="color:#ff0000;" id="messages">
+            {{message}}
+        </p>
+    {% endfor %}
+
+    {% if error_message is not None %}
+
+        {% for error in error_message %}
+            <p style="color:#ff0000;">
+                {{error}}
+            </p>
+        {% endfor %}
+
+    {% endif %}
+
+    <div class="mb-3">
+
+        {% for field in user_form %}
+
+            <div>
+
+                {{ field.label_tag }}
+                {{ field }}
+
+                <a href="#" class="d-inline-block" data-bs-toggle="tooltip" title="{{ field.help_text }}" data-bs-original-title="Default tooltip">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                      <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>
+
+                </a>
+
+                </br>
+
+                <div style="color:#ff0000;">
+                    {{ field.errors }}
+                </div>
+
+            </div>
+
+            </br>
+
+        {% endfor %}
+
+
+        {% for field in customer_form %}
+
+            <div>
+
+                {{ field.label_tag }}
+                {{ field }}
+
+                <a href="#" class="d-inline-block" data-bs-toggle="tooltip" title="{{ field.help_text }}" data-bs-original-title="Default tooltip">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                      <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>
+
+                </a>
+
+                </br>
+
+                <div style="color:#ff0000;">
+                    {{ field.errors }}
+                </div>
+
+            </div>
+
+            </br>
+
+        {% endfor %}
+
+        <div class='label'>
+            Phone Number:
+        </div>
+
+        <div class="row" style="vertical-align: middle;">
+
+            <div class="col-sm-10">
+
+                <div>
+
+                    <input type="text" style="margin-bottom:10px;" name="phone_number1" class="form-control" required="" id="phone_number1">
+
+                </div>
+
+            </div>
+
+            <div class="col-sm-2">
+
+                <input class='btn btn-primary' style="display:inline-block; " type="button" id="more_fields" onclick="add_fields();" value="+" >
+
+            </div>
+
+        </div>
+
+        <div class="row" style="vertical-align: middle;">
+
+            <div class="col-sm-10">
+
+                <div class="content" id="wrapper">
+
+                </div>
+
+            </div>
+
+            <div class="col-sm-2">
+
+                <input class='btn btn-danger' hidden style="display:inline-block; " type="button" id="less_fields" onclick="remove_fields();" value="-" >
+
+            </div>
+
+        </div>
+
+        <a href="#" class="d-inline-block" data-bs-toggle="tooltip" title="Enter your phone number" data-bs-original-title="Default tooltip">
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg>
+
+        </a>
+
+    </div>
+
+    <div class="form-check">
+
+      <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+
+      <label class="form-check-label" for="invalidCheck">
+        Agree to terms and conditions
+      </label>
+
+      <div class="invalid-feedback">
+        You must agree before submitting.
+      </div>
+
+    </div>
+
+    </br>
+
+    </br>
+
+    <button class="w-100 btn btn-lg btn-primary" type="submit">
+        Register
+    </button>
+
+    </br>
+
+    </br>
+
+    </br>
+
+    </br>
+
+</form>
+
+<script type="text/javascript">
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    function add_fields() {
+        document.getElementById('wrapper').innerHTML += '<input type="text" style="margin-bottom:10px;" name="phone_number2" class="form-control" id="phone_number2">';
+        document.getElementById('more_fields').disabled = true
+        document.getElementById('less_fields').hidden = false
+    }
+
+    function remove_fields() {
+        document.getElementById('more_fields').disabled = false
+        document.getElementById('less_fields').hidden = true
+        document.getElementById('phone_number2').remove()
+    }
+</script>
+{% endblock %}

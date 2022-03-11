@@ -1,0 +1,311 @@
+{% extends 'staff_base.html' %}
+{% load mult %}
+{% load dictionary %}
+
+{% block title %}Arrived Stock {{ arrived_stock_object.id }} {% endblock %}
+
+{% block content %}
+
+<p style="margin:20px; color:#ff0000;" class="fw-bold fs-2">
+
+  Arrived Stock ID: {{ arrived_stock_object.id }}
+
+</p>
+
+
+<div class="accordion accordion-flush" style="margin:20px;" id="accordionExample">
+
+  <div class="accordion-item" style="margin:20px;">
+
+    <h2 class="accordion-header">
+
+        <button class="accordion-button fw-bold fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapse" aria-expanded="true" aria-controls="collapse">
+
+          Stock Request Sent on {{ stock_request.creation_date_time.date }} {{ stock_request.creation_date_time.time }} &emsp; &emsp; &emsp; Status: &ensp; <span style="color: #050505;">{{ stock_request.accept_status }}</span> &emsp; &emsp; &emsp; ID: &ensp; <span style="color: #050505;">{{ stock_request.id }}</span>
+
+        </button>
+
+    </h2>
+
+    <div id="collapse" class="accordion-collapse collapse show" aria-labelledby="heading" data-bs-parent="#accordionExample">
+
+      <div class="accordion-body" style="vertical-align: middle; ">
+
+        <table class="table table-striped table-bordered" style="border-color:#000000;">
+
+          <thead class="table-dark">
+
+            <tr>
+              <th scope="col">Medicine ID</th>
+              <th scope="col">Medicine Name</th>
+              <th scope="col">Quantity</th>
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+              {% for medicine in medicine_in_stock_request %}
+
+                <tr>
+                  <td>{{ medicine.medicine_id.id }}</td>
+                  <td>{{ medicine.medicine_id }}</td>
+                  <td>{{ medicine.quantity }}</td>
+                </tr>
+
+              {% endfor %}
+
+          </tbody>
+
+        </table>
+
+
+        <div class="card" style="width: 50rem;">
+
+          <div class="card-header">
+
+            <p style="margin:10px; color:#0000ff;" class="fw-bold fs-4">
+
+              Vendor Details
+
+            </p>
+
+          </div>
+
+          <div class="card-body">
+
+            <h5 class="card-title fw-bold fs-5">
+
+              {{ stock_request.vendor_id }}
+
+            </h5>
+
+            <div class="fs-5">
+
+              <p>
+
+                <b>
+                  Email:
+                </b>
+
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ stock_request.vendor_id.email }}">
+                  {{ stock_request.vendor_id.email }}
+                </a>
+
+              </p>
+
+            </div>
+
+            <div class="fs-5">
+
+              <p>
+                <b>
+                  Phone Numbers:
+                </b>
+
+                {% if vendor_phone %}
+
+                  {% for phone in vendor_phone %}
+
+                    {{ phone.phone_number }}
+
+                    </br>
+
+                  {% endfor %}
+
+                {% else %}
+
+                  None
+
+                {% endif %}
+
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<div class="card" style="margin:30px; width: 80rem; border-color:#000000;">
+
+<div class="card-header">
+
+  <p style="margin:10px; color:#0000ff;" class="fw-bold fs-4">
+
+    Items Arrived in Stock
+
+  </p>
+
+</div>
+
+<div class="card-body">
+
+
+  <table class="table table-striped table-bordered" style="border-color:#000000;">
+
+    <thead class="table-dark">
+
+      <tr>
+        <th scope="col">Item ID</th>
+        <th scope="col">Item Name</th>
+        <th scope="col">Expiry Date</th>
+        <th scope="col">Quantity Arrived</th>
+      </tr>
+
+    </thead>
+
+
+    <tbody>
+
+      {% for item in items_in_arrived_stock %}
+
+        <tr>
+          <td>{{ item.item_id.id }}</td>
+          <td>{{ item.item_id.medicine_id }}</td>
+          <td>{{ item.item_id.expiry_date }}</td>
+          <td>{{ item.item_id.quantity_at_time_of_arrival }}</td>
+        </tr>
+
+      {% endfor %}
+
+    </tbody>
+
+  </table>
+
+</div>
+
+</div>
+
+<form method="POST" id="StockRequestForm">
+
+  {% csrf_token %}
+
+    <p style="margin:30px; color:#0000ff;" class="fw-bold fs-3">
+      Follow the steps to register the arrived items
+    </p>
+
+    <p style="margin:30px; color:#ff0000;" class="fw-bold fs-5">
+      Step 1: Select the medicine that has arrived
+    </p>
+
+    <select style="margin:30px; width:30rem; border-color:#000000;" class="form-select fw-bold" name="medicine_id" aria-label="Default select example">
+
+      {% for medicine in medicine_in_stock_request %}
+
+        <option value="{{ medicine.medicine_id.id }}">
+          {{ medicine.medicine_id }}
+        </option>
+
+      {% endfor %}
+
+    </select>
+
+    <p style="margin:30px; color:#ff0000;" class="fw-bold fs-5">
+      Step 2: Enter the expiry date of this batch of medicine
+    </p>
+
+    <input style="margin-left:30px; margin-top:10px; width:30rem; border-color:#000000; border-radius:10px;" type="date" id="expiry_date" name="expiry_date">
+
+    <p style="margin:30px; color:#ff0000;" class="fw-bold fs-5">
+      Step 3: Input the quantity of in this batch of medicine
+    </p>
+
+    <input style="margin:30px; width:30rem; border-color:#000000;" class="form-control" type="number" step="1" min="1" value="1" id="quantity" name="quantity" class="quantity-field border-0 text-center w-25">
+
+    <p style="margin:30px; color:#ff0000;" class="fw-bold fs-5">
+      Step 4: Add the batch of medicine and repeat the process until all batches are added, and then you can Exit
+    </p>
+
+    <button style="margin-left:30px; margin-top:10px;" class="btn btn-primary">
+      Add Medicine
+    </button>
+
+</form>
+
+</br>
+
+</br>
+
+</br>
+
+</br>
+
+</br>
+
+</br>
+
+</br>
+
+</br>
+
+
+<div class="text-center" >
+
+  <button class="btn btn-danger fw-bold fs-1" onclick="Exit()">
+    Exit
+  </button>
+
+</div>
+
+</br>
+
+</br>
+
+</br>
+
+</br>
+
+</br>
+
+</br>
+
+<script>
+
+  var today = new Date().toISOString().split('T')[0];
+
+  document.getElementsByName("expiry_date")[0].setAttribute('min', today);
+
+  function Exit()
+  {
+    var result = confirm("This is a one time process. This means you confirm that all items pertaining to the stock have indeed arrived and have been registered. Are you sure you want to exit?");
+
+    if (result)
+    {
+        document.location.href='{% url 'staff:stock_requests_made' %}';
+    }
+
+  }
+
+</script>
+
+<script>
+
+  function Scrolldown()
+  {
+       window.scroll(
+       {
+          top: 500,
+          behavior: 'smooth'
+       });
+
+  }
+
+
+  window.onload = Scrolldown;
+
+</script>
+
+{% endblock %}

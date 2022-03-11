@@ -1,0 +1,667 @@
+{% extends 'staff_base.html' %}
+{% load mult %}
+{% load dictionary %}
+
+
+{% block css %}
+
+  <style>
+    #stock_requests_made
+    {
+      border-top-left-radius: 25px;
+      border-top-right-radius: 25px;
+      color: #F0F8FF;
+      background-color: #00631b;
+    }
+  </style>
+
+{% endblock %}
+
+
+{% block title %}Stock Requests{% endblock %}
+
+
+{% block content %}
+
+<div class="row" style="vertical-align: middle; ">
+
+  <div class="col-sm-10 my-auto">
+
+    <div style="margin:20px; color: #0320fc;" class="fw-bold fs-3">
+
+      Stock Requests Sent
+
+    </div>
+
+  </div>
+
+  <div class="col-sm-2 my-auto text-center">
+
+    <a class="btn btn-primary" href="{% url 'staff:new_stock_request' %}">
+
+      Create New
+
+    </a>
+
+  </div>
+
+
+</div>
+
+{% if stock_requests.exists %}
+
+
+    <div class="accordion accordion-flush" style="margin:20px;" id="accordionExample">
+
+      {% for stock_request in stock_requests %}
+
+        {% with stock_request.id as id %}
+
+
+                {% if stock_request.accept_status == "Pending" %}
+
+                  <div class="accordion-item" style="margin:20px;">
+
+                    <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+
+                    <button class="accordion-button fw-bold fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="true" aria-controls="collapse{{ forloop.counter }}">
+
+                      Stock Request Sent on {{ stock_request.creation_date_time.date }} {{ stock_request.creation_date_time.time }} &emsp; &emsp; &emsp; Status: &ensp; <span style="color: #050505;">{{ stock_request.accept_status }}</span>  &emsp; &emsp; &emsp; ID: &ensp; <span style="color: #050505;">{{ id }}</span>
+
+                    </button>
+
+
+                    </h2>
+
+
+                    <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse show" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionExample">
+
+                      <div class="accordion-body" style="vertical-align: middle; ">
+
+                        <div class="row" style="vertical-align: middle; ">
+
+                          <div class="col-sm-10 my-auto">
+
+                            <div class="fw-bold fs-4">
+                              Medicines Requested
+                            </div>
+
+                          </div>
+
+
+                          <div class="col-sm-1 my-auto">
+
+                          </div>
+
+
+                          <div class="col-sm-1 my-auto">
+
+                            <form class="" action="" method="POST">
+
+                              {% csrf_token %}
+
+                              <div align="right" style="margin:10px;">
+
+                              {% if stock_request.accept_status == "Pending" %}
+
+                                <button class="btn btn-danger" name="cancel" value="{{ id }}">
+
+                                  Cancel
+
+                                </button>
+
+                              {% endif %}
+
+                              </div>
+
+                            </form>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+
+
+                      <table class="table table-striped table-bordered" style="border-color:#000000;">
+
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Medicine Name</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Unit Cost Price</th>
+                            <th scope="col">Sum Total</th>
+                          </tr>
+                        </thead>
+
+
+                        <tbody>
+
+
+                          {% with medicine_in_stock_request|dictionary:id as medicine_list%}
+
+                            {% for medicine in medicine_list %}
+
+                              <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ medicine.medicine_id }}</td>
+                                <td>{{ medicine.quantity }}</td>
+                                <td>{{ medicine.cost_price_at_time_of_request }}</td>
+                                <td>{{ medicine.cost_price_at_time_of_request|mult:medicine.quantity }}</td>
+                              </tr>
+
+                            {% endfor %}
+
+                          {% endwith %}
+
+                        </tbody>
+
+                      </table>
+
+
+                      <div class="row" style="vertical-align: middle; ">
+
+                        <div class="col-sm-6 my-auto">
+
+                          <div>
+
+                          <p class="fw-bold fs-4"><span style="color: #000000">Estimated Send Date: </span>&emsp; <span style="color: #662200">{{ stock_request.estimated_send_date }} </span></p>
+
+                          </div>
+
+                        </div>
+
+
+                        <div class="col-sm-6 my-auto">
+
+                          <div>
+
+                          <p align="right" class="fw-bold fs-4"><span style="color: #000000">Total Cost: </span>&emsp; <span style="color: #007504">&#8377;{{ total_price_list|dictionary:id }} </span></p>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+
+                      <div class="card" style="width: 50rem;">
+
+                          <div class="card-header">
+
+                            <p style="margin:10px; color:#0000ff;" class="fw-bold fs-4">
+                              Vendor Details
+                            </p>
+
+                          </div>
+
+                          <div class="card-body">
+
+                            <h5 class="card-title fw-bold fs-5">
+                              {{ stock_request.vendor_id }}
+                            </h5>
+
+                            <div class="fs-5">
+
+                              <p>
+
+                                <b>
+                                  Email:
+                                </b>
+
+                                <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ stock_request.vendor_id.email }}">
+                                  {{ stock_request.vendor_id.email }}
+                                </a>
+
+                              </p>
+
+                            </div>
+
+
+                            <div class="fs-5">
+
+                              <p>
+
+                                <b>
+                                  Phone Numbers:
+                                </b>
+
+                                {% if vendor_phone|dictionary:id %}
+
+                                  {% for phone in vendor_phone|dictionary:id %}
+
+                                    {{ phone.phone_number }}
+
+                                    </br>
+
+                                  {% endfor %}
+
+                                {% else %}
+
+                                  None
+
+                                {% endif %}
+
+                              </p>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                    </div>
+
+                  </div>
+
+
+                {% endif %}
+
+
+
+
+                {% if stock_request.accept_status == "Accepted" %}
+
+                <div class="accordion-item" style="margin:20px;">
+
+                  <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+
+                    <button class="accordion-button collapsed fw-bold fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+
+                      Stock Request Sent on {{ stock_request.creation_date_time.date }} {{ stock_request.creation_date_time.time }} &emsp; &emsp; &emsp; Status: &ensp; <span style="color: #00ff1e;">{{ stock_request.accept_status }}</span> &emsp; &emsp; &emsp; ID: &ensp; <span style="color: #050505;">{{ id }}</span> &emsp; &emsp; &emsp; Stocked Arrived: &ensp; <span style="color: #050505;">{{ arrived|dictionary:id }}</span>
+
+                    </button>
+
+
+                  </h2>
+
+
+
+                  <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionExample">
+
+                    <div class="accordion-body" style="vertical-align: middle;">
+
+                      <div class="row" style="vertical-align: middle; ">
+
+                        <div class="col-sm-6 my-auto">
+
+                          <div class="fw-bold fs-4">
+                            Medicines Requested
+                          </div>
+
+                        </div>
+
+
+                        <div class="col-sm-6 my-auto">
+
+                          <form class="" action="" method="POST">
+
+                            {% csrf_token %}
+
+                            <div align="right" style="margin:10px;">
+
+                              {% if not arrived|dictionary:id %}
+
+                                <a class="btn btn-success" href="{% url 'staff:arrived_stock' %}?stock_request_id={{id}}">Arrived Stock</a>
+
+                              {% else %}
+
+                                <a class="btn btn-primary" href="{% url 'staff:arrived_stock_details' %}?stock_request_id={{id}}">Arrived Stock Details</a>
+
+                              {% endif %}
+
+                            </div>
+
+                          </form>
+
+                        </div>
+
+                      </div>
+
+
+                      <table class="table table-striped table-bordered" style="border-color:#000000;">
+
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Medicine Name</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Unit Cost Price</th>
+                            <th scope="col">Sum Total</th>
+                          </tr>
+                        </thead>
+
+
+                        <tbody>
+
+                          {% with medicine_in_stock_request|dictionary:id as medicine_list%}
+
+                            {% for medicine in medicine_list %}
+
+                              <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ medicine.medicine_id }}</td>
+                                <td>{{ medicine.quantity }}</td>
+                                <td>{{ medicine.cost_price_at_time_of_request }}</td>
+                                <td>{{ medicine.cost_price_at_time_of_request|mult:medicine.quantity }}</td>
+                              </tr>
+
+                            {% endfor %}
+
+                          {% endwith %}
+
+                        </tbody>
+
+                      </table>
+
+                      <div class="row" style="vertical-align: middle; ">
+
+                        <div class="col-sm-6 my-auto">
+
+                          <div>
+
+                            <p class="fw-bold fs-4"><span style="color: #000000">Estimated Send Date: </span>&emsp; <span style="color: #662200">{{ stock_request.estimated_send_date }} </span></p>
+
+                          </div>
+
+                        </div>
+
+
+                        <div class="col-sm-6 my-auto">
+
+                          <div>
+
+                            <p align="right" class="fw-bold fs-4"><span style="color: #000000">Total Cost: </span>&emsp; <span style="color: #007504">&#8377;{{ total_price_list|dictionary:id }} </span></p>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+
+
+                      <div class="card" style="width: 50rem;">
+
+                        <div class="card-header">
+
+                          <p style="margin:10px; color:#0000ff;" class="fw-bold fs-4">
+                            Vendor Details
+                          </p>
+
+                        </div>
+
+
+                        <div class="card-body">
+
+                          <h5 class="card-title fw-bold fs-5">
+                            {{ stock_request.vendor_id }}
+                          </h5>
+
+
+                          <div class="fs-5">
+
+                            <p>
+
+                              <b>
+                                Email:
+                              </b>
+
+                              <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ stock_request.vendor_id.email }}">
+                                {{ stock_request.vendor_id.email }}
+                              </a>
+
+                            </p>
+
+                          </div>
+
+                          <div class="fs-5">
+
+                            <p>
+
+                              <b>
+                                Phone Numbers:
+                              </b>
+
+                              {% if vendor_phone|dictionary:id %}
+
+                                {% for phone in vendor_phone|dictionary:id %}
+
+                                  {{ phone.phone_number }}
+
+                                  </br>
+
+                                {% endfor %}
+
+                              {% else %}
+
+                                None
+
+                              {% endif %}
+
+                            </p>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                {% endif %}
+
+
+
+
+
+                {% if stock_request.accept_status == "Rejected" %}
+
+
+                <div class="accordion-item" style="margin:20px;">
+
+                  <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+
+                    <button class="accordion-button collapsed fw-bold fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+
+                      Stock Request Sent on {{ stock_request.creation_date_time.date }} {{ stock_request.creation_date_time.time }} &emsp; &emsp; &emsp; Status: &ensp; <span style="color: #ff1100;">{{ stock_request.accept_status }}</span> &emsp; &emsp; &emsp; ID: &ensp; <span style="color: #050505;">{{ id }}</span>
+
+                    </button>
+
+
+                  </h2>
+
+
+
+                  <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionExample">
+
+
+                    <div class="accordion-body" style="vertical-align: middle; ">
+
+                      <div class="row" style="vertical-align: middle; ">
+
+                        <div class="col-sm-6 my-auto">
+
+                          <div class="fw-bold fs-4">
+                            Medicines Requested
+                          </div>
+
+                        </div>
+
+                        <div class="col-sm-6 my-auto">
+
+                        </div>
+
+                      </div>
+
+
+                      <table class="table table-striped table-bordered" style="border-color:#000000;">
+
+
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Medicine Name</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Unit Cost Price</th>
+                            <th scope="col">Sum Total</th>
+                          </tr>
+                        </thead>
+
+
+                        <tbody>
+
+                          {% with medicine_in_stock_request|dictionary:id as medicine_list%}
+
+                            {% for medicine in medicine_list %}
+
+                              <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ medicine.medicine_id }}</td>
+                                <td>{{ medicine.quantity }}</td>
+                                <td>{{ medicine.cost_price_at_time_of_request }}</td>
+                                <td>{{ medicine.cost_price_at_time_of_request|mult:medicine.quantity }}</td>
+                              </tr>
+
+                            {% endfor %}
+
+                          {% endwith %}
+
+
+                        </tbody>
+
+                      </table>
+
+
+
+
+                      <div class="row" style="vertical-align: middle; ">
+
+                        <div class="col-sm-6 my-auto">
+
+                          <div>
+
+                            <p class="fw-bold fs-4"><span style="color: #000000">Estimated Send Date: </span>&emsp; <span style="color: #662200">{{ stock_request.estimated_send_date }} </span></p>
+
+                          </div>
+
+                        </div>
+
+
+                        <div class="col-sm-6 my-auto">
+
+                          <div>
+
+                            <p align="right" class="fw-bold fs-4"><span style="color: #000000">Total Cost: </span>&emsp; <span style="color: #007504">&#8377;{{ total_price_list|dictionary:id }} </span></p>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+
+
+                      <div class="card" style="width: 50rem;">
+
+                        <div class="card-header">
+
+                          <p style="margin:10px; color:#0000ff;" class="fw-bold fs-4">
+                            Vendor Details
+                          </p>
+
+                        </div>
+
+
+                        <div class="card-body">
+
+                          <h5 class="card-title fw-bold fs-5">
+                            {{ stock_request.vendor_id }}
+                          </h5>
+
+
+                          <div class="fs-5">
+
+                            <p>
+                              <b>
+                                Email:
+                              </b>
+
+                              <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ stock_request.vendor_id.email }}">
+                                {{ stock_request.vendor_id.email }}
+                              </a>
+                            </p>
+
+
+                          </div>
+
+                          <div class="fs-5">
+
+                            <p>
+
+                              <b>
+                                Phone Numbers:
+                              </b>
+
+                              {% if vendor_phone|dictionary:id %}
+
+                                {% for phone in vendor_phone|dictionary:id %}
+
+                                  {{ phone.phone_number }}
+
+                                  </br>
+
+                                {% endfor %}
+
+                              {% else %}
+
+                                None
+
+                              {% endif %}
+
+                            </p>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                {% endif %}
+
+
+        {% endwith %}
+
+      {% endfor %}
+
+    </div>
+
+{% else %}
+
+
+    <p style="margin:20px" class="fw-bold fs-5">
+
+      {{ error_message }}
+
+    </p>
+
+
+{% endif %}
+
+
+{% endblock %}

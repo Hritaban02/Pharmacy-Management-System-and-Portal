@@ -1,0 +1,95 @@
+{% extends 'home_base.html' %}
+{% load static %}
+
+{% block css %}
+<style>
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+  {% if success_message %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin:20px;">
+
+      <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+
+        <use xlink:href="#check-circle-fill"/>
+
+      </svg>
+
+      {{ success_message }}
+
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+
+      </button>
+
+    </div>
+  {% endif %}
+
+  <main class="form-signin text-center" style="width:400px; margin:auto; margin-top:100px;">
+
+    <form class="site-form" method="post">
+
+      {% csrf_token%}
+
+      <img class="mb-4" src="{% static 'healthcare_icon.png' %}" alt="" width="102" height="97">
+
+      <h1 class="h3 mb-3 fw-bold fs-1">Please log in</h1>
+
+      <div class="form-floating" style="margin:10px;">
+
+        <input type="text" class="form-control" name="username" id="floatingInput" placeholder="Username">
+
+        <label for="floatingInput">Username</label>
+
+      </div>
+
+      <div class="form-floating" style="margin:10px;">
+
+        <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password">
+
+        <label for="floatingPassword">Password</label>
+
+      </div>
+
+      <div class="checkbox mb-3">
+
+        <label>
+
+          <input type="checkbox" value="remember-me"> Remember me
+
+        </label>
+
+      </div>
+
+      {% for message in messages %}
+
+      <p id="messages" style="color:#ff0000;">
+        {{message}}
+      </p>
+
+      {% endfor %}
+
+      <button class="w-100 btn btn-lg btn-primary" type="submit">Log in</button>
+
+      <p class="mt-5 mb-3 text-muted">© 2022</p>
+
+
+    </form>
+
+  </main>
+{% endblock %}

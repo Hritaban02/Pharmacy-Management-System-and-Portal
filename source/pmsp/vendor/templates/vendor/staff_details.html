@@ -1,0 +1,98 @@
+{% extends 'vendor_base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+{% if staff_object is not None %}
+
+  <div class="card" style="margin:50px; width: 50rem;">
+
+    <div class="card-header">
+
+      <p style="margin:20px; color:#0000ff;" class="fw-bold fs-2">
+        Staff Details
+      </p>
+
+    </div>
+
+
+
+    <div class="card-body">
+
+      <h5 class="card-title fw-bold fs-4">
+        {{ staff_object }}
+      </h5>
+
+
+      <p class="card-text fs-3">
+
+        Staff Member of
+
+        <img src="{% static 'healthcare_icon.png' %}" alt="" width="50" height="45" class="d-inline-block align-text-top">
+
+        <b>
+          We Care Pharmacy
+        </b>
+
+        [Pharmacy Management System and Portal].
+
+      </p>
+
+
+      <div class="fs-4">
+
+        <p>
+          <b>
+            Email:
+          </b>
+
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ staff_object.email }}">
+            {{ staff_object.email }}
+          </a>
+
+        </p>
+
+      </div>
+
+      <div class="fs-4">
+
+        <p>
+
+          <b>
+            Phone Numbers:
+          </b>
+
+          {% if staff_phone %}
+
+            {% for phone in staff_phone %}
+
+              {{ phone.phone_number }}
+
+              </br>
+
+            {% endfor %}
+
+          {% else %}
+
+            None
+
+          {% endif %}
+
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+{% else %}
+
+  <p style="margin:20px" class="fw-bold fs-5">
+    {{ error_message }}
+  </p>
+
+{% endif %}
+
+{% endblock %}

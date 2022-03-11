@@ -1,0 +1,433 @@
+{% extends 'staff_base.html' %}
+{% load mult %}
+{% load dictionary %}
+
+{% block title %}Arrived Stock {{ arrived_stock_object.id }} {% endblock %}
+
+{% block content %}
+
+<div class="row" style="vertical-align: middle; ">
+
+  <div class="col-sm-11 my-auto">
+
+    <p style="margin:20px; color:#ff0000;" class="fw-bold fs-2">
+
+      Arrived Stock Details - Arrived Stock ID: {{ arrived_stock_object.id }}
+
+    </p>
+
+  </div>
+
+  <div class="col-sm-1 my-auto">
+
+    <button class="btn btn-info" type="button" onclick="PrintTable();" value="Print">
+
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+        <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+        <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+      </svg>
+
+      Print
+
+    </button>
+
+  </div>
+
+</div>
+
+<div class="card" style="margin:30px; width: 80rem; border-color:#000000;" >
+
+  <div class="card-header">
+
+    <p style="margin:10px; color:#0000ff;" class="fw-bold fs-4">
+      Stock Request Sent on {{ stock_request.creation_date_time.date }} {{ stock_request.creation_date_time.time }} &emsp; &emsp; &emsp; Status: &ensp; <span style="color: #050505;">{{ stock_request.accept_status }}</span> &emsp; &emsp; &emsp; ID: &ensp; <span style="color: #050505;">{{ stock_request.id }}</span>
+    </p>
+
+  </div>
+
+  <div class="card-body">
+
+      <table class="table table-striped table-bordered" style="border-color:#000000;">
+
+      <thead class="table-dark">
+
+        <tr>
+          <th scope="col">Medicine ID</th>
+          <th scope="col">Medicine Name</th>
+          <th scope="col">Quantity</th>
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+          {% for medicine in medicine_in_stock_request %}
+
+            <tr>
+              <td>{{ medicine.medicine_id.id }}</td>
+              <td>{{ medicine.medicine_id }}</td>
+              <td>{{ medicine.quantity }}</td>
+            </tr>
+
+          {% endfor %}
+
+      </tbody>
+
+      </table>
+
+  </div>
+
+</div>
+
+
+
+<div class="card" style="margin:30px; width: 80rem; border-color:#000000;">
+
+  <div class="card-header">
+
+    <p style="margin:10px; color:#0000ff;" class="fw-bold fs-4">
+      Items Arrived in Arrived Stock ID: {{ arrived_stock_object.id }} for Stock Request ID: {{ arrived_stock_object.stock_request_id.id }} on {{ arrived_stock_object.creation_date_time.date }} {{ arrived_stock_object.creation_date_time.time }}
+    </p>
+
+  </div>
+
+  <div class="card-body">
+
+    <table class="table table-striped table-bordered" style="border-color:#000000;">
+
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">Item ID</th>
+          <th scope="col">Item Name</th>
+          <th scope="col">Expiry Date</th>
+          <th scope="col">Quantity Arrived</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        {% for item in items_in_arrived_stock %}
+
+          <tr>
+            <td>{{ item.item_id.id }}</td>
+            <td>{{ item.item_id.medicine_id }}</td>
+            <td>{{ item.item_id.expiry_date }}</td>
+            <td>{{ item.item_id.quantity_at_time_of_arrival }}</td>
+          </tr>
+
+        {% endfor %}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+
+
+<div class="card" style="margin:30px; width: 50rem; border-color:#000000;">
+
+  <div class="card-header">
+
+    <p style="margin:10px; color:#0000ff;" class="fw-bold fs-4">
+      Vendor Details
+    </p>
+
+  </div>
+
+  <div class="card-body">
+
+    <h5 class="card-title fw-bold fs-5">
+      {{ arrived_stock_object.vendor_id }}
+    </h5>
+
+    <div class="fs-5">
+
+      <p>
+
+        <b>
+          Email:
+        </b>
+
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ stock_request.vendor_id.email }}">
+          {{ arrived_stock_object.vendor_id.email }}
+        </a>
+
+      </p>
+
+    </div>
+
+
+    <div class="fs-5">
+
+      <p>
+
+        <b>
+          Phone Numbers:
+        </b>
+
+        {% if vendor_phone %}
+
+          {% for phone in vendor_phone %}
+
+            {{ phone.phone_number }}
+
+            </br>
+
+          {% endfor %}
+
+        {% else %}
+
+          None
+
+        {% endif %}
+
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<div class="text-center">
+
+  <a class="btn btn-primary" href="{% url 'staff:stock_requests_made' %}">
+    Go Back to Stock Requests
+  </a>
+
+</div>
+
+
+</br>
+
+</br>
+
+</br>
+
+</br>
+
+</br>
+
+
+<iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank">
+
+</iframe>
+
+<div id="dvContents" style="margin:20px;" hidden>
+
+  <h3>
+
+    Items Arrived in Stock Request ID {{ arrived_stock_object.stock_request_id.id }}
+
+  </h3>
+
+  <h3>
+
+    Generated by {{ staff_object }} Staff ID {{ staff_id }}
+
+  </h3>
+
+  <footer class="footer_content">
+    Generated on
+    <span id='date-time'>
+
+    </span>
+  </footer>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <div class="card" style="margin:30px; width: 60rem; border-color:#000000;" >
+
+    <div class="card-header">
+
+      <p style="margin:10px; color:#0000ff;" class="fw-bold fs-4">
+        Stock Request Sent on {{ stock_request.creation_date_time.date }} {{ stock_request.creation_date_time.time }} &emsp; &emsp; &emsp; Status: &ensp; <span style="color: #050505;">{{ stock_request.accept_status }}</span> &emsp; &emsp; &emsp; ID: &ensp; <span style="color: #050505;">{{ stock_request.id }}</span>
+      </p>
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-striped table-bordered" style="border-color:#000000;">
+
+          <thead>
+
+            <tr>
+              <th scope="col">Medicine ID</th>
+              <th scope="col">Medicine Name</th>
+              <th scope="col">Quantity</th>
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+              {% for medicine in medicine_in_stock_request %}
+
+                <tr>
+                  <td>{{ medicine.medicine_id.id }}</td>
+                  <td>{{ medicine.medicine_id }}</td>
+                  <td>{{ medicine.quantity }}</td>
+                </tr>
+
+              {% endfor %}
+
+          </tbody>
+
+        </table>
+
+    </div>
+
+  </div>
+
+
+  <div class="card" style="margin:30px; width: 60rem; border-color:#000000;">
+
+    <div class="card-header">
+
+      <p style="margin:10px; color:#0000ff;" class="fw-bold fs-4">
+
+        Items Arrived in Arrived Stock ID: {{ arrived_stock_object.id }} for Stock Request ID: {{ arrived_stock_object.stock_request_id.id }} on {{ arrived_stock_object.creation_date_time.date }} {{ arrived_stock_object.creation_date_time.time }}
+
+      </p>
+
+    </div>
+
+
+    <div class="card-body">
+
+      <table class="table table-striped table-bordered" style="border-color:#000000;">
+
+        <thead>
+
+          <tr>
+            <th scope="col">Item ID</th>
+            <th scope="col">Item Name</th>
+            <th scope="col">Expiry Date</th>
+            <th scope="col">Quantity Arrived</th>
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        {% for item in items_in_arrived_stock %}
+
+          <tr>
+            <td>{{ item.item_id.id }}</td>
+            <td>{{ item.item_id.medicine_id }}</td>
+            <td>{{ item.item_id.expiry_date }}</td>
+            <td>{{ item.item_id.quantity_at_time_of_arrival }}</td>
+          </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+
+      </table>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="card" style="margin:30px; width: 50rem; border-color:#000000;">
+
+    <div class="card-header">
+
+      <p style="margin:10px; color:#0000ff;" class="fw-bold fs-4">
+        Vendor Details
+      </p>
+
+    </div>
+
+    <div class="card-body">
+
+      <h5 class="card-title fw-bold fs-5">
+        {{ arrived_stock_object.vendor_id }}
+      </h5>
+
+      <div class="fs-5">
+
+        <p>
+
+          <b>
+            Email:
+          </b>
+
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to={{ stock_request.vendor_id.email }}">
+            {{ arrived_stock_object.vendor_id.email }}
+          </a>
+
+        </p>
+
+      </div>
+
+
+      <div class="fs-5">
+
+        <p>
+          <b>Phone Numbers:
+          </b>
+
+          {% if vendor_phone %}
+
+            {% for phone in vendor_phone %}
+
+              {{ phone.phone_number }}
+
+              </br>
+
+            {% endfor %}
+
+          {% else %}
+
+            None
+
+          {% endif %}
+
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script type="text/javascript">
+
+    function PrintTable()
+    {
+
+        window.frames["print_frame"].document.body.innerHTML = document.getElementById("dvContents").innerHTML;
+
+        window.frames["print_frame"].window.focus();
+
+        window.frames["print_frame"].window.print();
+
+    }
+
+</script>
+
+<script>
+
+  var dt = new Date();
+
+  document.getElementById('date-time').innerHTML=dt;
+
+</script>
+
+{% endblock %}

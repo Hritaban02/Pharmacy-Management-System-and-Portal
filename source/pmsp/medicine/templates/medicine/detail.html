@@ -1,0 +1,426 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontawesome/fontawesome-free@5.15.4/css/fontawesome.min.css" integrity="sha384-jLKHWM3JRmfMU0A5x5AkjWkw/EYfGUAGagvnfryNV3F9VqM98XiIH7VBGVoxVSc7" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="{% static 'medicine/style.css' %}">
+
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+    </symbol>
+    <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+      <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+    </symbol>
+    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+      <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+    </symbol>
+  </svg>
+
+  <style>
+    body {
+      background: url({% static 'medicine/images/medicine_template.jpeg' %});
+      background-repeat: no-repeat;
+      background-position: center down;
+      background-size: cover;
+    }
+  </style>
+{% endblock %}
+
+{% block title %}{{ medicine_object.trade_name }}{% endblock %}
+
+{% block content %}
+
+    <div class="card" style="width: 100%;">
+
+      <div class="card-body">
+
+        <h1 class="fw-bold fs-1 m-3">
+
+          {{ medicine_object.trade_name }}
+
+        </h1>
+
+      </div>
+
+    </div>
+
+    <div class="card-body">
+
+      <h3 class="fs-3 m-3">
+
+        {{ medicine_object.scientific_name }}
+
+      </h3>
+
+    </div>
+
+    {% with medicine_object.id|slugify as ID %}
+
+      {% with 'medicine/images/medicine_'|add:ID|add:'.jpeg' as image_src %}
+
+        <div class="card" style="float:right; margin: 20px; width: 18rem;">
+
+          <div class="card-body">
+
+            {% if medicine_object.image %}
+                <img src="{{ medicine_object.image.url }}" class="card-img-top shadow" alt="No Image">
+            {% else %}
+              <img class="card-img-top shadow" alt="No Image">
+            {% endif %}
+
+            <h5 class="card-title">
+              Image
+            </h5>
+
+          </div>
+
+        </div>
+
+      {% endwith %}
+
+    {% endwith %}
+
+    <div class="card" style="width: 50%; margin: 20px;">
+
+      <div class="card-body">
+
+        <h5 class="card-title">
+          Description
+        </h5>
+
+        <p class="card-text">
+          {{ medicine_object.description }}
+        </p>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="card" style="display: inline-block; margin-left: 20px; width: 18rem;">
+
+      <div class="card-body">
+
+        <h5 class="card-title">
+
+          Price
+
+        </h5>
+
+        <p class="card-text fw-bold" style="color:#00a808;">
+
+          &#8377;{{ medicine_object.selling_price }}
+
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="card" style="display: inline-block; margin: 10px; width: 18rem">
+
+      <div class="card-body">
+
+        <h5 class="card-title">
+
+          Average User Rating
+
+        </h5>
+
+        <p class="card-text fw-bold" style="color:#FFBF00;">
+
+          {{ medicine_object.avg_rating }} stars
+
+        </p>
+
+      </div>
+
+    </div>
+
+    <div class="card" style="display: inline-block; margin-left: 20px; width: 28rem;">
+
+      <div class="card-body">
+
+        <h5 class="card-title">
+
+          Manufactured By
+
+        </h5>
+
+        <p class="card-text fw-bold" style="color:#0307fc;">
+
+          {{ medicine_object.vendor_id }}
+
+        </p>
+
+      </div>
+
+    </div>
+
+    {% if customer is not None %}
+
+      <div class="card" style="margin: 20px; width: 18rem">
+
+        <div class="card-body">
+
+          <h5 class="card-title">
+
+            Your Rating
+
+          </h5>
+
+          <p class="card-text fw-bold" style="color:#FFBF00;">
+
+            {{ rating.rating }} stars
+
+          </p>
+
+          <p class="card-text">
+
+            rated on {{ rating.rate_date_time }}
+
+          </p>
+
+        </div>
+
+      </div>
+
+      <form id="RatedForm" method="post">
+
+        {% csrf_token %}
+
+        <fieldset>
+
+          <div class="card" style="margin: 20px; width: 18rem">
+
+            <div style="display: inline-block; margin:5px;" id="RatedBtnPlaceholder">
+
+            </div>
+
+            <div class="card-body">
+
+              <h4 class="card-title">
+
+                Give a New Rating
+
+              </h4>
+
+            </div>
+
+            <div class="star-rating">
+
+              <input type="radio" name="stars" id="star-a" value="5"/>
+
+              <label for="star-a">
+
+              </label>
+
+              <input type="radio" name="stars" id="star-b" value="4"/>
+
+              <label for="star-b">
+
+              </label>
+
+              <input type="radio" name="stars" id="star-c" value="3"/>
+
+              <label for="star-c">
+
+              </label>
+
+              <input type="radio" name="stars" id="star-d" value="2"/>
+
+              <label for="star-d">
+
+              </label>
+
+              <input type="radio" name="stars" id="star-e" value="1"/>
+
+              <label for="star-e">
+
+              </label>
+
+            </div>
+
+            <button class="btn btn-primary" id="RatedBtn" style="margin:10px;" type="submit">
+
+              Rate it!
+
+            </button>
+
+          </div>
+
+        </fieldset>
+
+      </form>
+
+      <form id="AddedToCartForm" method="post">
+
+        {% csrf_token %}
+
+        <fieldset>
+
+          <div class="card" style="margin: 20px; width: 35rem">
+
+            <div style="display: inline-block; margin:5px;" id="AddedToCartBtnPlaceholder">
+
+            </div>
+
+            <div class="card-body">
+
+              <div class="d-flex justify-content-between">
+
+                <div>
+
+                   <p class="card-title fw-bold fs-4">
+
+                     Quantity
+
+                   </p>
+
+                </div>
+
+                <div class="input-group w-auto justify-content-end align-items-center">
+
+                  <input class="form-control" type="number" step="1" min="1" value="1" id="quantity" name="quantity" class="quantity-field border-0 text-center w-25">
+
+                </div>
+
+                <button class="btn btn-primary" id="AddedToCartBtn" style="display: inline-block; margin:10px;" type="submit">
+
+                  Add to Cart
+
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </fieldset>
+
+      </form>
+
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+
+    </script>
+
+    <script type="text/javascript">
+
+      var alertAddedToCartBtnPlaceholder = document.getElementById('AddedToCartBtnPlaceholder')
+
+      var alertAddedToCartBtnTrigger = document.getElementById('AddedToCartBtn')
+
+
+      function alertAddedToCartBtn(message, type)
+      {
+        var wrapper = document.createElement('div')
+        wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' +
+        '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>' +
+        message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+
+        alertAddedToCartBtnPlaceholder.append(wrapper)
+      }
+
+      if (alertAddedToCartBtnTrigger)
+      {
+        alertAddedToCartBtnTrigger.addEventListener('click', function ()
+        {
+          alertAddedToCartBtn('You have added the items to cart!', 'success')
+        })
+      }
+    </script>
+
+    <script type="text/javascript">
+
+      var alertRatedBtnPlaceholder = document.getElementById('RatedBtnPlaceholder')
+
+      var alertRatedBtnTrigger = document.getElementById('RatedBtn')
+
+      function alertRatedBtn(message, type)
+      {
+        var wrapper = document.createElement('div')
+        wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' +
+        '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>' +
+        message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+
+        alertRatedBtnPlaceholder.append(wrapper)
+
+      }
+
+      if (alertRatedBtnTrigger)
+      {
+        alertRatedBtnTrigger.addEventListener('click', function ()
+        {
+          alertRatedBtn('You have given a new rating!', 'success')
+        })
+      }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous">
+
+    </script>
+
+    <script type="text/javascript">
+
+      $(document).on('submit','#AddedToCartForm',function(e)
+      {
+          e.preventDefault();
+
+          $.ajax(
+            {
+                type:'POST',
+
+                url:'{% url 'medicine:detail' medicine_object.id %}',
+
+                data:
+                {
+                    quantity:$("#quantity").val(),
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                },
+
+                success:function(){},
+
+            });
+
+      });
+    </script>
+
+    <script type="text/javascript">
+
+      $(document).on('submit', '#RatedForm', function(e)
+      {
+          e.preventDefault();
+
+          $.ajax(
+            {
+
+                type:'POST',
+
+                url:'{% url 'medicine:detail' medicine_object.id %}',
+
+                data:
+                {
+                    'stars':$("input[name='stars']:checked").val(),
+                    csrfmiddlewaretoken:$("input[name=csrfmiddlewaretoken]").val(),
+                },
+
+                success:function(){},
+
+            });
+
+      });
+
+    </script>
+
+{% endblock %}

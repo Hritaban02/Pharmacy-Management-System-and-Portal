@@ -1,0 +1,502 @@
+{% extends 'staff_base.html' %}
+{% load mult %}
+{% load sub %}
+{% load dictionary %}
+
+
+{% block title %} Accept Order Details {{ order_id }} {% endblock %}
+
+
+{% block content %}
+
+<p style="margin:20px; color:#ff0000;" class="fw-bold fs-3">
+
+  Item List for Order ID {{ order_id }}
+
+</p>
+
+<div class="row" style="vertical-align: middle; ">
+
+  <div class="col-sm-11 my-auto">
+
+    <p style="margin:20px; color:#0000ff;" class="fw-bold fs-5">
+
+      Please print the following list
+
+    </p>
+
+  </div>
+
+  <div class="col-sm-1 my-auto">
+
+    <button class="btn btn-info" type="button" onclick="PrintTable();" value="Print">
+
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+        <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+        <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+      </svg>
+
+      Print
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<div style="margin:20px;">
+
+  <div class="card" style="width: 70rem;">
+
+    <div class="card-body">
+
+      <h5 class="card-title fw-bold">
+
+        Item List for Order ID {{ order_id }}
+
+      </h5>
+
+
+      <table class="table table-striped table-bordered" style="border-color:#000000;">
+
+        <thead class="table-dark">
+
+          <tr>
+            <th scope="col">Item ID</th>
+            <th scope="col">Item Name</th>
+            <th scope="col">Expiry Date</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Unit Price(in &#8377;)</th>
+            <th scope="col">Sum Total(in &#8377;)</th>
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          {% for item in items_in_order %}
+
+            {% with unit_price_of_items|dictionary:item as unit_price %}
+
+              <tr>
+                <td>{{ item.item_id.id }}</td>
+                <td>{{ item.item_id.medicine_id }}</td>
+                <td>{{ item.item_id.expiry_date }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ unit_price }}</td>
+                <td>{{ unit_price|mult:item.quantity }}</td>
+              </tr>
+
+            {% endwith %}
+
+          {% endfor %}
+
+        </tbody>
+
+      </table>
+
+
+      <div class="row" style="vertical-align: middle; ">
+
+        <div class="col-sm-5 my-auto">
+
+          <p class="fw-bold fs-5" >
+
+            Estimated Delivery Date:
+
+            <span style="color:#0000ff;">
+
+              {{ order_to_accept.estimated_delivery_date }}
+
+            </span>
+
+          </p>
+
+        </div>
+
+
+        <div class="col-sm-5 my-auto">
+
+          <p class="fw-bold fs-5" align="right" >
+
+            Total Price:
+
+            <span style="color:#00ff00;">
+
+              &#8377;{{ total_price }}
+
+            </span>
+
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="fw-bold fs-5">
+
+        Customer ID : {{ order_to_accept.customer_id.id }}
+
+        </br>
+
+        Customer Name : {{ order_to_accept.customer_id }}
+
+        </br>
+
+        Customer Email : {{ order_to_accept.customer_id.email }}
+
+        </br>
+
+        Customer Phone :
+
+        {% for phone_number in phone_number_list %}
+
+          {{ phone_number }} &nbsp;&nbsp;
+
+        {% endfor %}
+
+      </div>
+
+      </br>
+
+      </br>
+
+      <div class="fw-bold fs-5">
+
+        <p style="color:#0000ff;">
+
+          Payment Method :
+
+          <span style="color:#000000;">
+
+            {{ order_to_accept.payment_method }}
+
+          </span>
+
+        </p>
+
+      </div>
+
+
+
+      </br>
+
+
+
+      <div class="fw-bold fs-5">
+
+        <p style="color:#0000ff;">
+
+          Address Of Delivery
+
+        </p>
+
+
+        Street Number: {{ order_to_accept.customer_id.street_number }}
+
+        </br>
+
+        Street Name: {{ order_to_accept.customer_id.street_name }}
+
+        </br>
+
+        Apartment Number: {{ order_to_accept.customer_id.apt_number }}
+
+        </br>
+
+        City: {{ order_to_accept.customer_id.city }}
+
+        </br>
+
+        State: {{ order_to_accept.customer_id.state }}
+
+        </br>
+
+        Country: {{ order_to_accept.customer_id.country.name }}
+
+        </br>
+
+        Zip: {{ order_to_accept.customer_id.zip }}
+
+        </br>
+
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<div class="text-center">
+
+  <a class="btn btn-primary" href="{% url 'staff:index' %}">
+
+    Go Back to Orders
+
+  </a>
+
+
+</div>
+
+
+</br>
+
+</br>
+
+</br>
+
+</br>
+
+</br>
+
+
+<iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank">
+
+</iframe>
+
+
+
+
+<div id="dvContents" style="margin:20px;" hidden>
+
+  <h3>
+
+    Item List for Order ID {{ order_id }}
+
+  </h3>
+
+  <h3>
+
+    Generated by {{ staff_object }} Staff ID {{ staff_id }}
+
+  </h3>
+
+
+  <footer class="footer_content">
+
+    Generated on
+
+    <span id='date-time'>
+
+
+    </span>
+
+  </footer>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+
+  <div class="card" style="width: 70rem;">
+
+    <div class="card-body">
+
+      <h5 class="card-title fw-bold">I
+        tem List for Order ID {{ order_id }}
+      </h5>
+
+
+      <table class="table table-striped table-bordered" style="border-color:#000000;">
+
+        <thead>
+
+          <tr>
+            <th scope="col">Item ID</th>
+            <th scope="col">Item Name</th>
+            <th scope="col">Expiry Date</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Unit Price(in &#8377;)</th>
+            <th scope="col">Sum Total(in &#8377;)</th>
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          {% for item in items_in_order %}
+
+            {% with unit_price_of_items|dictionary:item as unit_price %}
+
+              <tr>
+                <td>{{ item.item_id.id }}</td>
+                <td>{{ item.item_id.medicine_id }}</td>
+                <td>{{ item.item_id.expiry_date }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ unit_price }}</td>
+                <td>{{ unit_price|mult:item.quantity }}</td>
+              </tr>
+
+            {% endwith %}
+
+          {% endfor %}
+
+        </tbody>
+
+      </table>
+
+
+      <div class="row" style="vertical-align: middle; ">
+
+        <div class="col-sm-5 my-auto">
+
+          <p class="fw-bold fs-5" >
+
+            Estimated Delivery Date:
+
+            <span style="color:#0000ff;">
+
+              {{ order_to_accept.estimated_delivery_date }}
+
+            </span>
+
+          </p>
+
+        </div>
+
+
+        <div class="col-sm-5 my-auto">
+
+          <p class="fw-bold fs-5" align="right" >
+
+            Total Price:
+
+            <span style="color:#00ff00;">
+
+              &#8377;{{ total_price }}
+
+            </span>
+
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="fw-bold fs-5">
+
+        Customer ID : {{ order_to_accept.customer_id.id }}
+
+        </br>
+
+        Customer Name : {{ order_to_accept.customer_id }}
+
+        </br>
+
+        Customer Email : {{ order_to_accept.customer_id.email }}
+
+        </br>
+
+        Customer Phone :
+
+        {% for phone_number in phone_number_list %}
+
+          {{ phone_number }} &nbsp;&nbsp;
+
+        {% endfor %}
+
+      </div>
+
+
+      </br>
+
+      </br>
+
+      <div class="fw-bold fs-5">
+
+        <p style="color:#0000ff;">
+
+          Payment Method :
+
+          <span style="color:#000000;">
+
+            {{ order_to_accept.payment_method }}
+
+          </span>
+
+        </p>
+
+      </div>
+
+      </br>
+
+      <div class="fw-bold fs-5">
+
+        <p style="color:#0000ff;">
+
+          Address Of Delivery
+
+        </p>
+
+        Street Number: {{ order_to_accept.customer_id.street_number }}
+
+        </br>
+
+        Street Name: {{ order_to_accept.customer_id.street_name }}
+
+        </br>
+
+        Apartment Number: {{ order_to_accept.customer_id.apt_number }}
+
+        </br>
+
+        City: {{ order_to_accept.customer_id.city }}
+
+        </br>
+
+        State: {{ order_to_accept.customer_id.state }}
+
+        </br>
+
+        Country: {{ order_to_accept.customer_id.country.name }}
+
+        </br>
+
+        Zip: {{ order_to_accept.customer_id.zip }}
+
+        </br>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script type="text/javascript">
+
+    function PrintTable()
+    {
+
+        window.frames["print_frame"].document.body.innerHTML = document.getElementById("dvContents").innerHTML;
+
+        window.frames["print_frame"].window.focus();
+
+        window.frames["print_frame"].window.print();
+
+    }
+</script>
+
+
+
+<script>
+
+  var dt = new Date();
+
+  document.getElementById('date-time').innerHTML=dt;
+
+</script>
+
+{% endblock %}

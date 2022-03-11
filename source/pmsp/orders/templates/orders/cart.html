@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load mult %}
+
+{% block css %}
+  <style>
+    #cart
+    {
+      border-top-left-radius: 25px;
+      border-top-right-radius: 25px;
+      color: #F0F8FF;
+      background-color: #00631b;
+    }
+  </style>
+{% endblock %}
+
+{% block title %}My Cart{% endblock %}
+
+{% block content %}
+
+  <div style="margin:20px; color: #0320fc;" class="fw-bold fs-3">
+    My Cart
+  </div>
+
+  {% if medicines_in_cart is not None %}
+
+      <div class="accordion accordion-flush" style="margin:20px;" id="accordionExample">
+
+        {% for medicine in medicines_in_cart %}
+
+              <div class="accordion-item">
+
+                <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+
+                  <button class="accordion-button collapsed fw-bold fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+
+                    <span style="color: #ff0000">
+                      {{ medicine.medicine_id }}
+                    </span>
+
+                    &emsp; &emsp; &emsp; Quantity in cart: &ensp;
+
+                    <span style="color: #0400ff">
+                      {{ medicine.quantity }}
+                    </span>
+
+                    &emsp; &emsp; &emsp; Unit Price: &ensp;
+
+                    <span style="color: #007504">
+                      &#8377;{{ medicine.selling_price_at_time_of_order }}
+                    </span>
+
+                  </button>
+
+                </h2>
+
+                <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#accordionExample">
+
+                  <div class="accordion-body" style="vertical-align: middle; ">
+
+                    <div class="row" style="vertical-align: middle; ">
+
+                      <div class="col-sm-6 my-auto">
+
+                        <form action="{% url 'orders:cart' %}" method="POST" id="AddedToCartForm">
+
+                          {% csrf_token %}
+
+                          <fieldset>
+
+                            <div class="card" style="margin: 20px; width: 38rem">
+
+                              <div class="card-body">
+
+                                <div class="d-flex justify-content-between">
+
+                                  <div>
+
+                                    <p class="card-title fw-bold fs-4">
+                                      <span style="color: #000000">
+                                        Quantity in Cart
+                                      </span>
+                                    </p>
+
+                                  </div>
+
+                                  <div class="input-group w-auto justify-content-end align-items-center">
+
+                                     <input class="form-control" type="number" step="1" min="1" value="{{ medicine.quantity }}" id="quantity" name="quantity" class="quantity-field border-0 text-center w-25">
+
+                                  </div>
+
+                                  <button class="btn btn-primary" id="AddedToCartBtn" style="display: inline-block; margin:10px;" name="update" value={{ medicine.medicine_id.id }} type="submit">
+                                    Update Cart
+                                  </button>
+
+                                </div>
+
+                              </div>
+
+                            </div>
+
+                          </fieldset>
+
+                        </form>
+
+                      </div>
+
+                      <div class="col-sm-4 my-auto">
+
+                        <div class="card" style="margin: 20px; width: 25rem">
+
+                          <div class="card-body">
+
+                            <div class="d-flex justify-content-between">
+
+                              <div>
+
+                                {% with medicine.quantity as quan %}
+
+                                  {% with medicine.selling_price_at_time_of_order as SP%}
+
+                                    <p class="card-title fw-bold fs-4">
+
+                                      <span style="color: #000000">
+                                        Sum Total :
+                                      </span>
+
+                                      &emsp;
+
+                                      <span style="color: #007504">
+                                        &#8377;{{ quan|mult:SP }}
+                                      </span>
+
+                                    </p>
+
+                                  {% endwith %}
+
+                                {% endwith %}
+
+                              </div>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+
+                      <div class="col-sm-2 my-auto">
+
+                        <form class="" action="" method="POST">
+
+                          {% csrf_token %}
+
+                          <button class="btn btn-danger" id="Delete Item" style="display: inline-block; margin:10px;" name="delete" value={{ medicine.medicine_id.id }} type="submit">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                            </svg>
+
+                            Delete Item
+
+                          </button>
+
+                        </form>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+        {% endfor %}
+
+      </div>
+
+
+
+      <form class="" action="" method="POST">
+
+        {% csrf_token %}
+
+        <div class="row" style="vertical-align: middle; ">
+
+          <div class="col-sm-8 my-auto">
+
+            <select name="payment" align="left" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" style="width:35rem; margin:20px">
+
+              <option value="1">
+                Cash on Delivery
+              </option>
+
+              <option value="2">
+                Card (Currently Not Supported)
+              </option>
+
+            </select>
+
+          </div>
+
+          <div class="col-sm-4 my-auto">
+
+            <div align="right" style="display:inline-block; margin:50px; color: #000000;" class="fw-bold fs-3">
+              Total Price:
+
+              <span style="color: #007504">
+                &#8377;{{ total_price }}
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="text-center" style="margin:auto; margin-bottom:50px; width:500px;">
+
+            <button class="btn btn-success  fw-bold fs-1" id="Place Order" style="display: inline-block; margin:10px;" name="place" value=1 type="submit">
+              Place Order &#128512;
+            </button>
+
+        </div>
+
+      </form>
+
+  {% else %}
+
+      <p style="margin:20px" class="fw-bold fs-5">
+        {{ error_message }}
+      </p>
+
+  {% endif %}
+
+{% endblock %}
